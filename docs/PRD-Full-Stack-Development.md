@@ -6,11 +6,13 @@
 | Field | Value |
 |---|---|
 | **Nama Produk** | Path`Ora |
-| **Versi Dokumen** | 1.0 |
+| **Versi Dokumen** | 1.1 |
 | **Tanggal** | 29 Mei 2026 |
 | **Pemilik Dokumen** | Full-Stack Developer 1 (Backend) & Full-Stack Developer 2 (Frontend) |
 | **Status** | Draft untuk Review |
 | **Scope Dokumen** | Full Stack Development (Frontend + Backend + Integrasi AI/ML + Deployment) |
+
+> **Changelog v1.1** — Disesuaikan dengan desain halaman frontend yang sudah dibuat: penambahan **Skor Kesiapan Kerja**, pemetaan fitur ke halaman konkret (Register/Login, Dashboard Utama, Upload, Analysis, Rekomendasi Karir, Profile), penambahan **Sitemap (§3.0)**, serta pembaruan User Flow, endpoint API, model data, dan daftar mockup.
 
 ---
 
@@ -83,38 +85,79 @@ PRD ini **secara spesifik membatasi cakupan pada peran Full Stack Development**:
 
 > Ditandai dengan kepemilikan: **[FE]** Frontend, **[BE]** Backend, **[INT]** Integrasi AI/ML.
 
-### F1. Autentikasi & Manajemen Sesi **[FE][BE]**
-- Register, login, logout berbasis JWT.
-- Proteksi endpoint privat (CV & analisis milik user).
-- *Catatan:* dapat disederhanakan menjadi sesi anonim + token jika waktu terbatas (lihat Prioritas Fitur).
+### 3.0 Peta Halaman (Sitemap)
 
-### F2. Upload & Manajemen CV **[FE][BE]**
-- Upload CV (teks tempel atau file PDF/DOCX → diekstrak menjadi teks).
-- Validasi ukuran & tipe file.
-- Riwayat CV yang pernah diunggah per user.
+Berdasarkan desain halaman yang telah dibuat, frontend terdiri dari halaman-halaman berikut:
 
-### F3. Analisis CV via AI/ML **[INT][BE]**
-- Backend mengirim teks CV ke layanan AI dan menerima respons sesuai **API Contract** (lihat §10).
-- Menyimpan hasil analisis ke database.
+```
+[Publik]
+ ├── /register .................... Halaman Register
+ └── /login ....................... Halaman Login
+
+[Privat — setelah login]
+ ├── /dashboard ................... Dashboard Utama
+ │      • Card Skor Persentase Kesiapan Kerja (berdasarkan CV terakhir)
+ │      • Button "Upload CV"
+ │      • Riwayat Upload
+ │
+ ├── /upload ...................... Halaman Upload
+ │      • Form/area Upload CV
+ │
+ ├── /analysis/:analysisId ........ Halaman Analysis (hasil 1 CV)
+ │      • Top 5 Predictions Category (bar chart)
+ │      • Skill Gap Analysis dari top prediction (skill dimiliki vs perlu ditambah)
+ │      • Deskripsi Rekomendasi Karir Strategis (teks AI)
+ │
+ ├── /career-recommendations/:analysisId ... Halaman Rekomendasi Karir
+ │      • Keseluruhan prediksi category + skill gap analysis tiap kategori
+ │
+ └── /profile ..................... Halaman Profile
+        • Biodata pengguna
+        • Riwayat analysis CV
+```
+
+> **Navigasi global:** Sidebar/Navbar berisi tautan ke Dashboard, Upload, Profile, dan Logout. Halaman Analysis & Rekomendasi Karir diakses dari Dashboard/Riwayat.
+
+### 3.1 Daftar Fitur
+
+#### F1. Autentikasi & Manajemen Sesi — *Halaman Register & Login* **[FE][BE]**
+- Register (biodata dasar: nama, email, password) & Login berbasis JWT.
+- Logout & proteksi seluruh halaman privat (redirect ke `/login` bila belum auth).
+- Validasi form (email valid, password minimal, konfirmasi password).
+
+#### F2. Dashboard Utama — *Halaman /dashboard* **[FE][BE]**
+- **Card Skor Kesiapan Kerja**: persentase (0–100%) berdasarkan analisis CV terakhir, lengkap dengan label level (mis. *Rendah / Cukup / Siap / Sangat Siap*) dan kategori prediksi utama.
+- **Button Upload CV**: CTA utama menuju halaman Upload.
+- **Riwayat Upload**: daftar CV/analisis terakhir (tanggal, kategori prediksi, skor) dengan aksi "Lihat Analysis".
+- Empty state bila user belum pernah upload CV.
+
+#### F3. Upload & Manajemen CV — *Halaman /upload* **[FE][BE]**
+- Upload CV (tempel teks atau file PDF/DOCX → diekstrak menjadi teks).
+- Validasi ukuran & tipe file; tampilkan progress & loading state.
+- Setelah upload → trigger analisis → redirect ke Halaman Analysis saat selesai.
+
+#### F4. Analisis CV via AI/ML — *proses backend* **[INT][BE]**
+- Backend mengirim teks CV ke layanan AI dan menerima respons sesuai **API Contract** (§10).
+- Backend menghitung **Skor Kesiapan Kerja** (§10.1) dan menyimpan hasil ke database.
 - Penanganan error: timeout, layanan AI down, respons tidak valid → tidak crash, beri fallback state.
 
-### F4. Dashboard Hasil Analisis **[FE]**
-- **Predicted Category** + confidence (badge & gauge).
-- **Top Predictions** (bar chart) dengan filter ambang `confidence > 0.05`.
-- **Skill Match vs Skill Gap** per kategori (matched_skills dengan similarity, missing_skills).
-- **Career Recommendations** dengan filter `match_score > 0.3`.
-- **Deskripsi naratif** rekomendasi karir (teks dari LLM).
+#### F5. Halaman Analysis — *Halaman /analysis/:id* **[FE]**
+- **Top 5 Predictions Category** (bar chart) dengan filter ambang `confidence > 0.05`.
+- **Skill Gap Analysis** dari top prediction: daftar **skill yang dimiliki** (matched_skills + similarity) vs **skill yang perlu ditambahkan** (missing_skills).
+- **Deskripsi Rekomendasi Karir Strategis**: teks naratif dari AI (`description_career_recommendations`).
+- Tautan menuju Halaman Rekomendasi Karir untuk detail seluruh kategori.
 
-### F5. Visualisasi Data Strategis **[FE]**
-- Chart kategori, radar/skill bar, progress kesiapan kerja.
-- Insight ringkas ("Kamu cocok untuk Information Technology dengan keyakinan 83%").
+#### F6. Halaman Rekomendasi Karir — *Halaman /career-recommendations/:id* **[FE]**
+- Menampilkan **keseluruhan prediksi kategori** (career_recommendations, filter `match_score > 0.3`).
+- Untuk setiap kategori: **skill gap analysis** lengkap (matched vs missing skills).
+- Disajikan sebagai daftar/kartu yang dapat di-expand per kategori.
 
-### F6. Riwayat & Detail Analisis **[FE][BE]**
-- Daftar analisis sebelumnya.
-- Buka kembali detail analisis tertentu.
+#### F7. Halaman Profile — *Halaman /profile* **[FE][BE]**
+- **Biodata** pengguna (nama, email, dsb.) dengan opsi edit.
+- **Riwayat analysis CV**: daftar lengkap analisis yang pernah dilakukan, dapat dibuka kembali ke Halaman Analysis.
 
-### F7. Dashboard Agregat (Admin/Internal) **[FE][BE]** *(opsional/P2)*
-- Total CV dianalisis, distribusi kategori prediksi, rata-rata confidence.
+#### F8. Dashboard Agregat (Admin/Internal) **[FE][BE]** *(opsional/P2)*
+- Total CV dianalisis, distribusi kategori prediksi, rata-rata confidence & skor kesiapan kerja.
 
 ---
 
@@ -169,59 +212,61 @@ Menggunakan kerangka **MoSCoW** + label rilis (P0 = MVP wajib demo, P1 = penting
 
 | Prioritas | Fitur | Justifikasi |
 |---|---|---|
-| **P0 — Must Have** | F2 Upload CV (teks), F3 Analisis via AI, F4 Dashboard hasil, BR-1..BR-10 | Inti nilai produk & pemenuhan kriteria wajib |
-| **P0 — Must Have** | Resiliensi integrasi AI (timeout, fallback, no-crash) | Kriteria "tidak crash" |
-| **P1 — Should Have** | F1 Autentikasi JWT, F6 Riwayat analisis, F5 Visualisasi lanjutan, Upload file PDF/DOCX | Meningkatkan kualitas produk & personalisasi |
-| **P2 — Could Have** | F7 Dashboard agregat admin, ekspor PDF hasil, dark mode, i18n | Penyempurnaan, tidak menghambat demo |
+| **P0 — Must Have** | F3 Upload CV (teks), F4 Analisis via AI, F2 Dashboard Utama (skor + riwayat), F5 Halaman Analysis, BR-1..BR-10 | Inti nilai produk & pemenuhan kriteria wajib |
+| **P0 — Must Have** | Skor Kesiapan Kerja + Resiliensi integrasi AI (timeout, fallback, no-crash) | Diferensiasi produk & kriteria "tidak crash" |
+| **P1 — Should Have** | F1 Autentikasi JWT, F6 Halaman Rekomendasi Karir, F7 Halaman Profile (biodata + riwayat), Upload file PDF/DOCX | Meningkatkan kualitas produk & personalisasi |
+| **P2 — Could Have** | F8 Dashboard agregat admin, ekspor PDF hasil, dark mode, i18n | Penyempurnaan, tidak menghambat demo |
 | **Won't (saat ini)** | Mobile native, scraping, pembayaran, social login | Di luar scope/batasan proyek |
 
-**Rekomendasi urutan eksekusi:** Skeleton FE+BE → Schema DB → Endpoint CV & Analyze (dengan mock AI) → Dashboard + chart → Auth → Integrasi AI nyata → Polish responsif → Deploy.
+**Rekomendasi urutan eksekusi:** Skeleton FE+BE → Schema DB → Endpoint CV & Analyze (dengan mock AI) → Dashboard Utama (skor + riwayat) → Halaman Analysis + chart → Auth → Halaman Rekomendasi Karir & Profile → Integrasi AI nyata → Polish responsif → Deploy.
 
 ---
 
 ## 7. User Flow Umum
 
-### 7.1 Flow Utama — Analisis CV
+### 7.1 Flow Utama — Dari Login hingga Hasil Analisis
 ```
-[Landing Page]
-      │  klik "Analisis CV Saya"
-      ▼
-[Register / Login]  ──(mode anonim opsional)──┐
-      │                                        │
-      ▼                                        ▼
-[Halaman Upload CV] ◀───────────────────────────
-      │  tempel teks / unggah file (PDF/DOCX)
-      │  klik "Analisis"
-      ▼
-[FE → POST /cvs]  simpan CV  →  [BE]
-      │
-      ▼
-[FE → POST /cvs/:id/analyze]
-      │     [BE → layanan AI/ML (HTTP)]
-      │            │  (timeout/retry handling)
-      │            ▼
-      │     [AI mengembalikan hasil sesuai contract]
-      │            │
-      │     [BE simpan hasil ke Postgres]
-      ▼
-[Loading State / Skeleton]  ←  polling/await respons
-      │
-      ▼
-[Dashboard Hasil]
-   • Predicted category + confidence (gauge/badge)
-   • Top predictions (bar chart, filter > 0.05)
-   • Skill match vs gap per kategori
-   • Career recommendations (filter > 0.3)
-   • Deskripsi naratif rekomendasi
-      │
-      ├─► [Simpan ke Riwayat]
-      └─► [Analisis CV Lain]
+[Register] ──▶ [Login]
+                  │  JWT tersimpan
+                  ▼
+            [Dashboard Utama]  (/dashboard)
+             • Card Skor Kesiapan Kerja (CV terakhir)
+             • Button "Upload CV"
+             • Riwayat Upload
+                  │  klik "Upload CV"
+                  ▼
+            [Halaman Upload]  (/upload)
+             • tempel teks / unggah file (PDF/DOCX)
+             • klik "Analisis"
+                  │
+                  ▼
+            [FE → POST /cvs]  simpan CV  →  [BE]
+                  │
+                  ▼
+            [FE → POST /cvs/:id/analyze]
+                  │   [BE → layanan AI/ML (HTTP)]  (timeout/retry handling)
+                  │   [BE hitung Skor Kesiapan Kerja + simpan ke Postgres]
+                  ▼
+            [Loading / Skeleton]  ← await respons
+                  │
+                  ▼
+            [Halaman Analysis]  (/analysis/:id)
+             • Top 5 predictions (bar, filter > 0.05)
+             • Skill gap analysis dari top prediction
+             • Deskripsi Rekomendasi Karir Strategis (teks AI)
+                  │
+                  └─▶ [Halaman Rekomendasi Karir]  (/career-recommendations/:id)
+                        • Semua kategori (match_score > 0.3) + skill gap tiap kategori
 ```
 
-### 7.2 Flow Sekunder — Lihat Riwayat
+### 7.2 Flow Sekunder — Profile & Riwayat
 ```
-[Dashboard] → [Menu Riwayat] → GET /analyses → [List Analisis]
-   → pilih item → GET /analyses/:id → [Detail Dashboard]
+[Navbar] → [Profile]  (/profile)
+   • Biodata (lihat/edit)  → GET/PATCH /users/me
+   • Riwayat analysis CV   → GET /analyses
+        └─ pilih item → GET /analyses/:id → [Halaman Analysis]
+
+[Dashboard Utama] → Riwayat Upload → pilih item → [Halaman Analysis]
 ```
 
 ### 7.3 Penanganan Kegagalan (Resiliensi)
@@ -230,7 +275,7 @@ POST /cvs/:id/analyze
    ├─ AI timeout (> N detik)   → status 504 → FE tampilkan "Coba lagi" (tidak crash)
    ├─ AI error / 5xx           → status 502 → fallback pesan + tombol retry
    ├─ Respons tidak valid       → validasi schema gagal → 422 + log
-   └─ Sukses                    → 200 + simpan + tampilkan
+   └─ Sukses                    → 200 + hitung skor + simpan + tampilkan
 ```
 
 ---
@@ -275,22 +320,29 @@ Base URL: `/api/v1`
 
 | Method | Endpoint | Deskripsi | Auth |
 |---|---|---|---|
-| `POST` | `/auth/register` | Registrasi user | ❌ |
+| `POST` | `/auth/register` | Registrasi user (biodata + kredensial) | ❌ |
 | `POST` | `/auth/login` | Login → JWT | ❌ |
-| `GET` | `/users/me` | Profil user saat ini | ✅ |
+| `GET` | `/users/me` | Profil/biodata user saat ini (Halaman Profile) | ✅ |
+| `PATCH` | `/users/me` | Update biodata user | ✅ |
+| `GET` | `/dashboard/me` | Data Dashboard Utama: skor kesiapan kerja terkini + ringkasan riwayat upload | ✅ |
 | `POST` | `/cvs` | Upload CV (teks/file) → `cv_id` | ✅ |
-| `GET` | `/cvs` | Daftar CV milik user | ✅ |
+| `GET` | `/cvs` | Daftar CV milik user (riwayat upload) | ✅ |
 | `GET` | `/cvs/:cvId` | Detail satu CV | ✅ |
 | `DELETE` | `/cvs/:cvId` | Hapus CV | ✅ |
-| `POST` | `/cvs/:cvId/analyze` | Trigger analisis AI, simpan hasil | ✅ |
+| `POST` | `/cvs/:cvId/analyze` | Trigger analisis AI, hitung skor, simpan hasil | ✅ |
 | `GET` | `/cvs/:cvId/analysis` | Hasil analisis terbaru dari CV | ✅ |
-| `GET` | `/analyses` | Riwayat analisis user | ✅ |
-| `GET` | `/analyses/:analysisId` | Detail satu analisis (sesuai contract) | ✅ |
+| `GET` | `/analyses` | Riwayat analisis user (Profile & Dashboard) | ✅ |
+| `GET` | `/analyses/:analysisId` | Detail satu analisis (Halaman Analysis & Rekomendasi Karir) | ✅ |
 | `GET` | `/categories` | Data referensi kategori karir | ❌ |
-| `GET` | `/dashboard/summary` | Agregat (opsional/admin) | ✅ |
+| `GET` | `/dashboard/summary` | Agregat admin (opsional) | ✅ |
 | `GET` | `/health` | Health check | ❌ |
 
 **Konvensi:** kata benda jamak, plural resource, nesting wajar (`/cvs/:cvId/analyze`), status code tepat (200/201/400/401/404/422/502/504), respons konsisten `{ data, error, meta }`.
+
+> **Catatan halaman → endpoint:**
+> - **Dashboard Utama** → `GET /dashboard/me` (skor + riwayat) atau gabungan `GET /analyses?limit=n`.
+> - **Halaman Analysis & Rekomendasi Karir** → `GET /analyses/:analysisId` (payload sama, ditampilkan beda sesuai kebutuhan halaman).
+> - **Halaman Profile** → `GET /users/me` + `GET /analyses`.
 
 ---
 
@@ -331,6 +383,28 @@ Respons hasil analisis yang disimpan & disajikan backend:
 - Skill `matched_skills` diurutkan menurun berdasarkan `similarity`.
 - Bila array kosong setelah filter → tampilkan empty state yang informatif.
 
+### 10.1 Skor Kesiapan Kerja (Work Readiness Score)
+
+Card **Skor Persentase Kesiapan Kerja** di Dashboard Utama membutuhkan satu nilai 0–100%. Field ini **belum ada** di kontrak AI saat ini, sehingga ada dua opsi (perlu disepakati dengan tim AI/Data Science):
+
+- **Opsi A (disarankan):** Tim AI menambahkan field `work_readiness_score` (0–1) langsung ke payload analisis. Full Stack tinggal menampilkan × 100%.
+- **Opsi B (fallback baseline):** Backend **menurunkan** skor dari field yang sudah ada pada kategori prediksi utama:
+
+```
+skill_coverage = jumlah_matched / (jumlah_matched + jumlah_missing)   // utk predicted_category
+avg_similarity = rata-rata similarity matched_skills
+
+work_readiness = 0.4 * confidence
+               + 0.4 * skill_coverage
+               + 0.2 * avg_similarity
+
+skor_persen = round(work_readiness * 100)   // 0–100
+```
+
+**Label level (FE):** `< 40% Perlu Persiapan` · `40–59% Cukup` · `60–79% Siap` · `≥ 80% Sangat Siap`.
+
+> Skor dihitung & disimpan backend saat analisis sukses (kolom `work_readiness_score`), agar konsisten antara Dashboard, Riwayat, dan Profile. Formula final harus disetujui lintas tim sebelum implementasi.
+
 ---
 
 ## 11. Model Data (PostgreSQL)
@@ -360,6 +434,7 @@ user_id        UUID FK -> users(id)
 status         TEXT            -- 'pending'|'success'|'failed'
 predicted_category TEXT
 confidence     NUMERIC(5,4)
+work_readiness_score NUMERIC(5,2)   -- 0..100, skor kesiapan kerja (lihat §10.1)
 result         JSONB           -- payload penuh sesuai API contract
 analyzed_at    TIMESTAMPTZ
 created_at     TIMESTAMPTZ DEFAULT now()
@@ -391,30 +466,36 @@ Index: `analyses(user_id)`, `analyses(cv_id)`, `analyses(predicted_category)`, G
 
 ## 13. Mockup & Desain UI
 
-Mockup wajib dibuat (BR-8) minimal untuk layar:
-1. **Landing Page** — value proposition + CTA "Analisis CV".
-2. **Auth** — login/register.
-3. **Upload CV** — area tempel teks / drag-drop file + tombol Analisis.
-4. **Loading/Processing** — skeleton & progress.
-5. **Dashboard Hasil** — gauge confidence, bar chart prediksi, skill match/gap, kartu rekomendasi karir, deskripsi naratif.
-6. **Riwayat** — daftar analisis.
-7. **Empty & Error states**.
+Mockup wajib dibuat (BR-8). Mengikuti desain halaman yang telah dibuat:
 
-Tool mockup yang disarankan: Figma. Aset warna & komponen mengikuti design system Tailwind (spacing, radius, palet konsisten).
+1. **Register** — form biodata + kredensial.
+2. **Login** — form login + tautan ke Register.
+3. **Dashboard Utama** — card Skor Kesiapan Kerja (persentase + level), button Upload CV, daftar Riwayat Upload.
+4. **Upload** — area tempel teks / drag-drop file (PDF/DOCX) + tombol Analisis + loading state.
+5. **Analysis** — bar chart Top 5 predictions, skill gap analysis (skill dimiliki vs perlu ditambah), deskripsi rekomendasi karir strategis (teks AI).
+6. **Rekomendasi Karir** — seluruh kategori prediksi + skill gap analysis per kategori.
+7. **Profile** — biodata (lihat/edit) + riwayat analysis CV.
+8. **State pendukung** — Loading/skeleton, Empty state (belum ada CV), Error/retry state.
+
+Tool mockup yang disarankan: Figma. Aset warna & komponen mengikuti design system Tailwind (spacing, radius, palet konsisten). Layout setiap halaman wajib responsif (mobile, tablet, desktop).
 
 ---
 
 ## 14. Kriteria Keberhasilan Produk
 
 ### 14.1 Acceptance Criteria (Demo MVP)
-- [ ] Pengguna dapat mengunggah CV (minimal teks) dan menerima hasil analisis tervisualisasi.
+- [ ] Pengguna dapat Register & Login (JWT), lalu diarahkan ke Dashboard Utama.
+- [ ] **Dashboard Utama** menampilkan card Skor Kesiapan Kerja, button Upload CV, dan Riwayat Upload.
+- [ ] Pengguna dapat mengunggah CV (minimal teks) di **Halaman Upload** dan menerima hasil analisis tervisualisasi.
+- [ ] **Halaman Analysis** menampilkan Top 5 predictions (bar, filter >0.05), skill gap analysis, dan deskripsi rekomendasi karir strategis.
+- [ ] **Halaman Rekomendasi Karir** menampilkan seluruh kategori (filter match_score >0.3) + skill gap per kategori.
+- [ ] **Halaman Profile** menampilkan biodata + riwayat analysis CV.
 - [ ] Frontend dibangun & di-bundle dengan **Vite**, styling **Tailwind**, networking via **Axios**.
 - [ ] Backend **Express** menyediakan RESTful API berkonvensi & menyimpan data ke **PostgreSQL**.
 - [ ] Fitur utama (analisis AI) **terintegrasi** dan **tidak crash** saat AI gagal/timeout.
-- [ ] Dashboard menampilkan predicted category, top predictions (filter >0.05), skill match/gap, dan career recommendations (filter >0.3) + deskripsi naratif.
 - [ ] Layout **responsif** di mobile, tablet, desktop.
 - [ ] Aplikasi **ter-deploy** (FE di Vercel, BE + Postgres di server).
-- [ ] **Mockup** UI tersedia.
+- [ ] **Mockup** UI tersedia untuk seluruh halaman.
 
 ### 14.2 Metrik Keberhasilan (KPI)
 | Metrik | Target |
