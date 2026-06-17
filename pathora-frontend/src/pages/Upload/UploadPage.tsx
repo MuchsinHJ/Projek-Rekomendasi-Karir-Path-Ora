@@ -57,6 +57,7 @@ const UploadPage: React.FC = () => {
   const [cancelError, setCancelError] = useState<string | null>(null);
   const [pendingReplacementFile, setPendingReplacementFile] =
     useState<File | null>(null);
+  const [replacementCvId, setReplacementCvId] = useState<string | null>(null);
   const [isReplaceConfirmOpen, setReplaceConfirmOpen] = useState(false);
   const [isReplacingFile, setReplacingFile] = useState(false);
   const [replaceError, setReplaceError] = useState<string | null>(null);
@@ -146,6 +147,7 @@ const UploadPage: React.FC = () => {
     setAnalysisFailed(false);
     setAiConsent(false);
     setCancelError(null);
+    setReplacementCvId(null);
     clearUploadedMetadata();
     setFeedbackOpen(false);
     resetUploadState();
@@ -153,15 +155,22 @@ const UploadPage: React.FC = () => {
     navigate("/upload", { replace: true });
   };
 
-  const uploadSelectedFile = async (file: File) => {
+  const prepareSelectedFile = (file: File) => {
     setSelectedFile(file);
     setUploadedCvId(null);
     setAnalysisFailed(false);
     setAiConsent(false);
     setCancelError(null);
     setReplaceError(null);
-    clearUploadedMetadata();
-    setFeedbackOpen(false);
+    resetUploadState();
+    setFeedbackOpen(true);
+  };
+
+  const uploadSelectedFile = async (file: File) => {
+    setUploadedCvId(null);
+    setAnalysisFailed(false);
+    setCancelError(null);
+    setReplaceError(null);
 
     const uploadResult = await uploadCV({
       source_type: "file",
@@ -170,7 +179,7 @@ const UploadPage: React.FC = () => {
 
     if (!uploadResult) {
       setFeedbackOpen(true);
-      return;
+      return null;
     }
 
     setUploadedCvId(uploadResult.id);
@@ -181,6 +190,31 @@ const UploadPage: React.FC = () => {
       uploadedAt: new Date().toISOString(),
     });
     setFeedbackOpen(true);
+
+    return uploadResult;
+  };
+
+  const consentAndAnalyzeSelectedFile = async () => {
+    if (!selectedFile || !hasAiConsent || isProcessing) return;
+
+    if (replacementCvId) {
+      try {
+        setReplacingFile(true);
+        await cvService.deleteCV(replacementCvId);
+        clearUploadedMetadata();
+        setReplacementCvId(null);
+      } catch (error) {
+        setReplaceError(parseApiError(error));
+        setReplacingFile(false);
+        return;
+      }
+      setReplacingFile(false);
+    }
+
+    const uploadResult = await uploadSelectedFile(selectedFile);
+    if (uploadResult?.id) {
+      await runAnalysis(uploadResult.id);
+    }
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -200,7 +234,8 @@ const UploadPage: React.FC = () => {
       return;
     }
 
-    await uploadSelectedFile(file);
+    setReplacementCvId(null);
+    prepareSelectedFile(file);
   };
 
   const cancelReplaceFile = () => {
@@ -210,29 +245,36 @@ const UploadPage: React.FC = () => {
     setReplaceError(null);
   };
 
-  const confirmReplaceFile = async () => {
+  const confirmReplaceFile = () => {
     if (!pendingReplacementFile || !uploadedMetadata?.cvId || isReplacingFile) {
       return;
     }
 
-    setReplacingFile(true);
     setReplaceError(null);
+    setReplacementCvId(uploadedMetadata.cvId);
+    prepareSelectedFile(pendingReplacementFile);
+    setPendingReplacementFile(null);
+    setReplaceConfirmOpen(false);
+  };
 
-    try {
-      await cvService.deleteCV(uploadedMetadata.cvId);
-      const fileToUpload = pendingReplacementFile;
-      setPendingReplacementFile(null);
-      setReplaceConfirmOpen(false);
-      await uploadSelectedFile(fileToUpload);
-    } catch (error) {
-      setReplaceError(parseApiError(error));
-    } finally {
-      setReplacingFile(false);
+  const cancelConsentFlow = () => {
+    if (isLoading || isAnalyzing || isCancellingAnalysis || isReplacingFile) {
+      return;
     }
+
+    setSelectedFile(null);
+    setAiConsent(false);
+    setReplacementCvId(null);
+    setFeedbackOpen(false);
+    resetUploadState();
+    setFileInputKey((current) => current + 1);
   };
 
   const cancelAnalysisAndDeleteCv = async () => {
-    if (!uploadedCvId || isCancellingAnalysis || isAnalyzing) return;
+    if (!uploadedCvId || isCancellingAnalysis || isAnalyzing || isLoading) {
+      cancelConsentFlow();
+      return;
+    }
 
     setCancellingAnalysis(true);
     setCancelError(null);
@@ -250,12 +292,24 @@ const UploadPage: React.FC = () => {
   const isProcessing =
     isLoading || isAnalyzing || isCancellingAnalysis || isReplacingFile;
   const errorMessage = error || analyzeError;
+  const isAwaitingUploadConsent =
+    !!selectedFile &&
+    !uploadedCvId &&
+    !errorMessage &&
+    !isLoading &&
+    !isReplacingFile &&
+    !isAnalyzing &&
+    !analysisFailed;
   const showFeedbackModal =
-    isFeedbackOpen && (!!errorMessage || (!!uploadedCvId && !error));
+    isFeedbackOpen &&
+    (!!errorMessage ||
+      isAwaitingUploadConsent ||
+      isProcessing ||
+      (!!uploadedCvId && !error));
   const isAnalyzeError = analysisFailed && !!uploadedCvId;
   const isUploadError = !!error && !isAnalyzeError;
   const shouldShowConsent =
-    !!uploadedCvId &&
+    (isAwaitingUploadConsent || !!uploadedCvId) &&
     !errorMessage &&
     !isAnalyzing &&
     !analysisFailed &&
@@ -266,6 +320,8 @@ const UploadPage: React.FC = () => {
       : "Unggah CV gagal"
     : isAnalyzing
       ? "Analisis CV sedang berjalan"
+      : isLoading || isReplacingFile
+        ? "Menyiapkan analisis CV"
       : shouldShowConsent
         ? "Persetujuan Analisis AI"
         : "CV berhasil diunggah";
@@ -273,8 +329,10 @@ const UploadPage: React.FC = () => {
     ? errorMessage
     : isAnalyzing
       ? "Sistem sedang membaca CV, mengekstrak skill, dan menghitung rekomendasi karir. Proses ini dapat memakan waktu beberapa saat."
+      : isLoading || isReplacingFile
+        ? "CV akan diunggah setelah persetujuan Anda diterima, lalu sistem langsung memulai analisis."
       : shouldShowConsent
-        ? "Path`Ora akan menggunakan AI untuk membaca dan menganalisis CV Anda, termasuk prediksi kategori karir, skill yang terdeteksi, skill yang perlu ditingkatkan, dan rekomendasi karir.\n\nData CV digunakan hanya untuk proses analisis dan menampilkan hasil kepada Anda."
+        ? "Path`Ora akan mengunggah CV Anda dan menggunakan AI untuk membaca serta menganalisis isinya, termasuk prediksi kategori karir, skill yang terdeteksi, skill yang perlu ditingkatkan, dan rekomendasi karir.\n\nData CV digunakan hanya untuk proses analisis dan menampilkan hasil kepada Anda."
         : analysisFailed
           ? "File sudah tersimpan, tetapi analisis gagal. Silakan unggah file lagi untuk memulai analisis baru."
           : "CV sudah tersimpan dan hasil analisis siap ditampilkan.";
@@ -387,7 +445,7 @@ const UploadPage: React.FC = () => {
             </div>
           )}
 
-          {shouldShowConsent && !isFeedbackOpen && (
+          {uploadedCvId && shouldShowConsent && !isFeedbackOpen && (
             <div className="mt-6 rounded-xl border border-emerald-100 bg-green-50 p-4">
               <p className="text-sm font-semibold text-[#102619]">
                 CV berhasil diunggah
@@ -513,8 +571,12 @@ const UploadPage: React.FC = () => {
           <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
             <button
               type="button"
-              onClick={() => setFeedbackOpen(false)}
-              disabled={isAnalyzing}
+              onClick={
+                isAwaitingUploadConsent
+                  ? cancelConsentFlow
+                  : () => setFeedbackOpen(false)
+              }
+              disabled={isLoading || isReplacingFile || isAnalyzing}
               className="absolute right-4 top-4 rounded-full p-1 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
               aria-label="Tutup pesan"
             >
@@ -557,16 +619,20 @@ const UploadPage: React.FC = () => {
 
             {shouldShowConsent && (
               <div className="mt-5">
-                {uploadedMetadata && (
+                {(selectedFile || uploadedMetadata) && (
                   <div className="mb-4 rounded-xl border border-gray-200 bg-gray-50 p-3">
                     <p className="text-xs uppercase tracking-wider text-gray-500">
-                      File yang sudah diunggah
+                      {selectedFile
+                        ? "File yang akan dianalisis"
+                        : "File yang sudah diunggah"}
                     </p>
                     <p className="mt-1 truncate text-sm font-semibold text-[#102619]">
-                      {uploadedMetadata.fileName}
+                      {selectedFile?.name ?? uploadedMetadata?.fileName}
                     </p>
                     <p className="mt-1 text-xs text-gray-500">
-                      {formatFileSize(uploadedMetadata.fileSize)}
+                      {formatFileSize(
+                        selectedFile?.size ?? uploadedMetadata?.fileSize ?? 0,
+                      )}
                     </p>
                   </div>
                 )}
@@ -586,8 +652,12 @@ const UploadPage: React.FC = () => {
 
                 <button
                   type="button"
-                  onClick={() => runAnalysis(uploadedCvId)}
-                  disabled={!hasAiConsent || isAnalyzing}
+                  onClick={
+                    isAwaitingUploadConsent
+                      ? consentAndAnalyzeSelectedFile
+                      : () => uploadedCvId && runAnalysis(uploadedCvId)
+                  }
+                  disabled={!hasAiConsent || isProcessing}
                   className="mt-4 w-full rounded-lg bg-[#102619] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#1a3a26] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Setuju & Analisis CV
@@ -595,14 +665,20 @@ const UploadPage: React.FC = () => {
 
                 <button
                   type="button"
-                  onClick={cancelAnalysisAndDeleteCv}
-                  disabled={isCancellingAnalysis || isAnalyzing}
+                  onClick={
+                    isAwaitingUploadConsent
+                      ? cancelConsentFlow
+                      : cancelAnalysisAndDeleteCv
+                  }
+                  disabled={isCancellingAnalysis || isAnalyzing || isLoading}
                   className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-red-200 px-4 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <Trash2 size={16} />
-                  {isCancellingAnalysis
+                  {isCancellingAnalysis || isLoading
                     ? "Membatalkan..."
-                    : "Batalkan Analisis & Hapus CV"}
+                    : isAwaitingUploadConsent
+                      ? "Batal"
+                      : "Batalkan Analisis & Hapus CV"}
                 </button>
 
                 {cancelError && (
