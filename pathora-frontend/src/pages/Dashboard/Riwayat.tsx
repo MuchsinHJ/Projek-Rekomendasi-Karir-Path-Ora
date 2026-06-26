@@ -80,7 +80,7 @@ const Riwayat: React.FC<Props> = ({ history, onDeleted }) => {
   return (
     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden font-['Newsreader']">
       <div className="flex flex-col gap-3 px-6 py-4 border-b border-gray-100 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-lg font-bold text-gray-900">Riwayat Unggah</h2>
+        <h2 className="text-lg font-bold text-gray-900">Upload History</h2>
         {history.length > itemsPerPage && (
           <div className="flex items-center justify-between gap-3 sm:justify-end">
             <p className="text-xs font-bold uppercase tracking-wider text-gray-500">
@@ -92,7 +92,7 @@ const Riwayat: React.FC<Props> = ({ history, onDeleted }) => {
                 onClick={goToPreviousPage}
                 disabled={safeCurrentPage === 1}
                 className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-[#102619] hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
-                aria-label="Riwayat sebelumnya"
+                aria-label="Previous history"
               >
                 <ChevronLeft size={16} />
               </button>
@@ -101,7 +101,7 @@ const Riwayat: React.FC<Props> = ({ history, onDeleted }) => {
                 onClick={goToNextPage}
                 disabled={safeCurrentPage === totalPages}
                 className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-[#102619] hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
-                aria-label="Riwayat berikutnya"
+                aria-label="Next history"
               >
                 <ChevronRight size={16} />
               </button>
@@ -136,7 +136,7 @@ const Riwayat: React.FC<Props> = ({ history, onDeleted }) => {
                     </p>
                     <p className="text-xs text-gray-400 mt-0.5">
                       {item.created_at
-                        ? new Date(item.created_at).toLocaleDateString("id-ID")
+                        ? new Date(item.created_at).toLocaleDateString("en-US")
                         : "-"}
                     </p>
                   </div>
@@ -148,10 +148,10 @@ const Riwayat: React.FC<Props> = ({ history, onDeleted }) => {
                   </p>
                   <p className="text-xs text-gray-400 mt-0.5 capitalize">
                     {item.status === "success"
-                      ? "Berhasil"
+                      ? "Success"
                       : item.status === "pending"
-                      ? "Diproses"
-                      : "Gagal"}
+                      ? "Processing"
+                      : "Failed"}
                   </p>
                 </div>
 
@@ -160,8 +160,8 @@ const Riwayat: React.FC<Props> = ({ history, onDeleted }) => {
                   onClick={(event) => openDeleteModal(event, item.cv_id)}
                   disabled={!item.cv_id || deletingCvId === item.cv_id}
                   className="ml-4 inline-flex h-9 w-9 items-center justify-center rounded-lg text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
-                  aria-label="Hapus CV"
-                  title="Hapus CV"
+                  aria-label="Delete CV"
+                  title="Delete CV"
                 >
                   <Trash2 size={18} />
                 </button>
@@ -175,7 +175,7 @@ const Riwayat: React.FC<Props> = ({ history, onDeleted }) => {
             <FileText size={24} />
           </div>
           <p className="text-gray-900 text-sm font-bold">
-            Belum ada dokumen yang diunggah.
+            No documents have been uploaded yet.
           </p>
         </div>
       )}
@@ -194,7 +194,7 @@ const Riwayat: React.FC<Props> = ({ history, onDeleted }) => {
               onClick={closeDeleteModal}
               disabled={!!deletingCvId}
               className="absolute right-4 top-4 rounded-full p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-50"
-              aria-label="Tutup konfirmasi hapus"
+              aria-label="Close delete confirmation"
             >
               <X size={18} />
             </button>
@@ -204,11 +204,11 @@ const Riwayat: React.FC<Props> = ({ history, onDeleted }) => {
             </div>
 
             <h3 className="pr-8 text-2xl font-semibold text-red-700 font-['Newsreader']">
-              Hapus CV?
+              Delete CV?
             </h3>
             <p className="mt-3 text-sm leading-6 text-gray-600">
-              CV ini beserta hasil analisis yang terkait akan dihapus dari
-              beranda Anda.
+              This CV and its related analysis results will be removed from
+              your dashboard.
             </p>
 
             <div className="mt-6 flex justify-end gap-3">
@@ -218,7 +218,7 @@ const Riwayat: React.FC<Props> = ({ history, onDeleted }) => {
                 disabled={!!deletingCvId}
                 className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Batal
+                Cancel
               </button>
               <button
                 type="button"
@@ -227,7 +227,7 @@ const Riwayat: React.FC<Props> = ({ history, onDeleted }) => {
                 className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <Trash2 size={16} />
-                {deletingCvId ? "Menghapus..." : "Hapus"}
+                {deletingCvId ? "Deleting..." : "Delete"}
               </button>
             </div>
           </div>

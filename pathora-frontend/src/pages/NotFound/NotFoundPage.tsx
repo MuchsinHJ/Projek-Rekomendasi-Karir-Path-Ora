@@ -6,7 +6,7 @@ const NotFoundContent = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthStore();
   const primaryTarget = isAuthenticated ? "/dashboard" : "/login";
-  const primaryLabel = isAuthenticated ? "Ke Beranda" : "Ke Halaman Masuk";
+  const primaryLabel = isAuthenticated ? "Go to Home" : "Go to Sign In";
 
   return (
     <section className="min-h-[70vh] flex items-center justify-center px-4 py-10">
@@ -16,14 +16,14 @@ const NotFoundContent = () => {
         </div>
 
         <p className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-[#2A4033] dark:text-[#8FB399]">
-          404 Tidak Ditemukan
+          404 Not Found
         </p>
         <h1 className="font-['Newsreader'] text-4xl font-bold text-gray-900 dark:text-[#d1d5d1] sm:text-5xl">
-          Halaman Tidak Ditemukan
+          Page Not Found
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-gray-600 dark:text-[#d1d5d1]/75 sm:text-base">
-          Rute yang Anda tuju tidak tersedia atau sudah dipindahkan. Silakan
-          kembali ke halaman utama aplikasi Path`Ora.
+          The route you requested is unavailable or has been moved. Please
+          return to the main Path`Ora app page.
         </p>
 
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -40,7 +40,7 @@ const NotFoundContent = () => {
             className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[#8FB399]/70 bg-white px-5 py-3 text-sm font-semibold text-[#102619] transition hover:bg-[#eef5ef] dark:border-[#8FB399]/40 dark:bg-[#0B2A18] dark:text-[#d1d5d1] dark:hover:bg-[#123720] sm:w-auto"
           >
             <ArrowLeft size={18} />
-            Kembali
+            Back
           </button>
         </div>
       </div>

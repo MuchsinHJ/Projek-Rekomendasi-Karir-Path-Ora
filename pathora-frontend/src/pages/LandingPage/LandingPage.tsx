@@ -70,22 +70,22 @@ export default function LandingPage() {
             {/* Teks Hero */}
             <div className="md:col-span-7 z-10 pr-0 md:pr-10">
               <span className="text-sm text-[#061B0E] font-medium uppercase tracking-[0.2em] mb-6 block scroll-reveal">
-                Eksklusivitas Profesional
+                Professional Exclusivity
               </span>
               <h1 className="font-serif text-5xl md:text-6xl lg:text-[4rem] text-[#061B0E] mb-8 leading-[1.1] font-semibold tracking-tight scroll-reveal">
-                Navigasi Karir dengan <br className="hidden md:block" />{" "}
-                <span className="italic font-light">Presisi AI</span>
+                Navigate Your Career with <br className="hidden md:block" />{" "}
+                <span className="italic font-light">AI Precision</span>
               </h1>
               <p className="text-lg md:text-xl text-[#434843] mb-10 max-w-xl leading-relaxed scroll-reveal">
-                Analisis CV mendalam untuk menemukan jalur profesional yang paling selaras dengan potensi Anda. Melampaui sekadar kata kunci, kami membaca ambisi.
+                In-depth CV analysis to discover the professional path that best aligns with your potential. Beyond keywords, we read ambition.
               </p>
               <div className="flex flex-col sm:flex-row gap-5 scroll-reveal">
                 <Link to="/login" className="bg-[#061B0E] text-white px-8 py-4 text-sm font-semibold uppercase tracking-widest hover:bg-[#0a2012] transition-all active:scale-95 shadow-xl shadow-[#061B0E]/15">
-                  Mulai Analisis Sekarang
+                  Start Analysis Now
                 </Link>
                 
                 <button className="border border-[#c3c8c1] bg-transparent text-[#061B0E] px-8 py-4 text-sm font-semibold uppercase tracking-widest hover:bg-[#f5f4ef] transition-all active:scale-95">
-                  Pelajari Metodologi
+                  Explore Methodology
                 </button>
               </div>
             </div>
@@ -113,7 +113,7 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-20">
               <h2 className="font-serif text-3xl md:text-4xl font-semibold text-[#061B0E] mb-6 scroll-reveal">
-                Proses Path'Ora
+                The Path'Ora Process
               </h2>
               <div className="h-px w-20 bg-[#061B0E]/20 mx-auto scroll-reveal"></div>
             </div>
@@ -124,13 +124,13 @@ export default function LandingPage() {
                   01
                 </div>
                 <h3 className="font-serif text-2xl font-semibold text-[#061B0E] mb-4 uppercase tracking-tight">
-                  Unggah
+                  Upload
                 </h3>
                 <p className="text-[#434843] text-base leading-relaxed mb-8 min-h-[80px]">
-                  Serahkan dokumen profesional Anda ke dalam ekosistem aman kami. Kami menerima format CV standar global.
+                  Submit your professional document into our secure ecosystem. We accept globally standard CV formats.
                 </p>
                 <div className="flex items-center text-[#061B0E] text-sm font-bold uppercase tracking-widest cursor-pointer group-hover:gap-4 transition-all gap-2">
-                  Mulai Unggah <span className="text-lg">→</span>
+                  Start Upload <span className="text-lg">→</span>
                 </div>
               </div>
               {/* Step 2 */}
@@ -139,13 +139,13 @@ export default function LandingPage() {
                   02
                 </div>
                 <h3 className="font-serif text-2xl font-semibold text-[#061B0E] mb-4 uppercase tracking-tight">
-                  Analisis
+                  Analysis
                 </h3>
                 <p className="text-[#434843] text-base leading-relaxed mb-8 min-h-[80px]">
-                  AI kami mengekstraksi bukan hanya pengalaman, tetapi kompetensi inti, gaya kepemimpinan, dan potensi laten.
+                  Our AI extracts not only experience, but also core competencies, leadership style, and latent potential.
                 </p>
                 <div className="flex items-center text-[#061B0E] text-sm font-bold uppercase tracking-widest cursor-pointer group-hover:gap-4 transition-all gap-2">
-                  Lihat Demo AI <span className="text-lg">→</span>
+                  View AI Demo <span className="text-lg">→</span>
                 </div>
               </div>
               {/* Step 3 */}
@@ -154,13 +154,13 @@ export default function LandingPage() {
                   03
                 </div>
                 <h3 className="font-serif text-2xl font-semibold text-[#061B0E] mb-4 uppercase tracking-tight">
-                  Rekomendasi
+                  Recommendations
                 </h3>
                 <p className="text-[#434843] text-base leading-relaxed mb-8 min-h-[80px]">
-                  Dapatkan peta jalan karir yang dikurasi secara personal, lengkap dengan peluang industri yang paling relevan.
+                  Get a personally curated career roadmap, complete with the most relevant industry opportunities.
                 </p>
                 <div className="flex items-center text-[#061B0E] text-sm font-bold uppercase tracking-widest cursor-pointer group-hover:gap-4 transition-all gap-2">
-                  Hasil Contoh <span className="text-lg">→</span>
+                  Sample Results <span className="text-lg">→</span>
                 </div>
               </div>
             </div>
@@ -175,13 +175,13 @@ export default function LandingPage() {
               <div className="col-span-1 md:col-span-8 bg-[#061B0E] text-white p-10 lg:p-14 rounded-3xl flex flex-col justify-between min-h-[380px] scroll-reveal">
                 <div>
                   <span className="text-xs lg:text-sm text-[#819985] uppercase tracking-[0.2em] mb-6 block font-semibold">
-                    Teknologi NLP Terapan
+                    Applied NLP Technology
                   </span>
                   <h2 className="font-serif text-4xl lg:text-5xl mb-6 leading-tight font-semibold">
-                    Kecerdasan untuk Masa Depan Anda
+                    Intelligence for Your Future
                   </h2>
                   <p className="text-base lg:text-lg text-[#cfe9d3] max-w-2xl leading-relaxed opacity-90">
-                    Kami menggunakan Natural Language Processing yang canggih untuk membedah setiap nuansa dalam riwayat karir Anda, memastikan bahwa saran yang kami berikan bukan sekadar algoritma, melainkan refleksi dari ambisi Anda yang sebenarnya.
+                    We use advanced Natural Language Processing to examine every nuance in your career history, ensuring our guidance is not just algorithmic, but a reflection of your true ambition.
                   </p>
                 </div>
                 <div className="mt-10 flex items-center gap-6">
@@ -200,10 +200,10 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <h4 className="font-serif text-2xl font-semibold text-[#061B0E] mb-3">
-                  Privasi Mutlak
+                  Absolute Privacy
                 </h4>
                 <p className="text-[#434843] leading-relaxed">
-                  Data Anda dienkripsi tingkat bank dan hanya digunakan secara eksklusif untuk analisis profil pribadi Anda.
+                  Your data is protected with bank-grade encryption and used exclusively for your personal profile analysis.
                 </p>
               </div>
 
@@ -213,7 +213,7 @@ export default function LandingPage() {
                   ★ ★ ★ ★ ★
                 </div>
                 <p className="font-serif italic text-2xl leading-snug text-[#061B0E] mb-8">
-                  "Path'Ora membuka perspektif baru dalam karir saya yang belum pernah saya sadari sebelumnya."
+                  "Path'Ora opened a new perspective on my career that I had never recognized before."
                 </p>
                 <div className="mt-auto">
                   <span className="w-8 h-px bg-[#061B0E]/20 block mb-4"></span>
@@ -233,7 +233,7 @@ export default function LandingPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#061B0E]/90 via-[#061B0E]/30 to-transparent"></div>
                 <div className="absolute bottom-10 left-10 right-10">
                   <p className="text-white font-serif text-2xl lg:text-3xl font-medium tracking-wide">
-                    Sinergi antara Intuitifitas Manusia dan Presisi Mesin.
+                    Synergy between human intuition and machine precision.
                   </p>
                 </div>
               </div>
@@ -245,16 +245,16 @@ export default function LandingPage() {
         <section className="py-32 px-6 text-center border-t border-[#e9e8e3]">
           <div className="max-w-3xl mx-auto scroll-reveal">
             <h2 className="font-serif text-4xl md:text-5xl font-semibold text-[#061B0E] mb-6">
-              Siap Memulai Babak Baru?
+              Ready to Start a New Chapter?
             </h2>
             <p className="text-lg md:text-xl text-[#434843] mb-12 leading-relaxed">
-              Langkah pertama menuju masa depan yang lebih selaras hanya berjarak satu unggahan. Bergabunglah dengan jaringan profesional terpilih kami.
+              The first step toward a more aligned future is just one upload away. Join our curated professional network.
             </p>
             <Link
               to="/login"
               className="inline-block bg-[#061B0E] text-white px-12 py-5 text-sm font-semibold uppercase tracking-[0.2em] hover:bg-[#0a2012] transition-all active:scale-95 shadow-2xl shadow-[#061B0E]/20"
             >
-              Analisis Profil Saya
+              Analyze My Profile
             </Link>
           </div>
         </section>

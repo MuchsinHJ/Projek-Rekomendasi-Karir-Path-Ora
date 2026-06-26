@@ -28,14 +28,14 @@ const FooterLayout: React.FC<FooterLayoutProps> = ({
                 {/* Links - hanya tampil di md ke atas */}
                 <div className="hidden md:flex gap-6">
                     <a href="#" className="hover:text-gray-900 transition-colors">
-                        Kebijakan Privasi
+                        Privacy Policy
                     </a>
                     <a href="#" className="hover:text-gray-900 transition-colors">
-                        Syarat dan Ketentuan
+                        Terms and Conditions
                     </a>
                     {showSupportLink && (
                         <a href="#" className="hover:text-gray-900 transition-colors">
-                            Bantuan
+                            Help
                         </a>
                     )}
                 </div>

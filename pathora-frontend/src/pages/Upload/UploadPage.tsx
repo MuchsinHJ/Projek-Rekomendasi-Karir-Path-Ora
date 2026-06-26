@@ -262,34 +262,33 @@ const UploadPage: React.FC = () => {
     !isCancellingAnalysis;
   const feedbackTitle = errorMessage
     ? isAnalyzeError
-      ? "Analisis AI gagal diproses"
-      : "Unggah CV gagal"
+      ? "AI analysis failed"
+      : "CV upload failed"
     : isAnalyzing
-      ? "Analisis CV sedang berjalan"
+      ? "CV analysis is in progress"
       : shouldShowConsent
-        ? "Persetujuan Analisis AI"
-        : "CV berhasil diunggah";
+        ? "AI Analysis Consent"
+        : "CV uploaded successfully";
   const feedbackMessage = errorMessage
     ? errorMessage
     : isAnalyzing
-      ? "Sistem sedang membaca CV, mengekstrak skill, dan menghitung rekomendasi karir. Proses ini dapat memakan waktu beberapa saat."
+      ? "The system is reading your CV, extracting skills, and calculating career recommendations. This process may take a few moments."
       : shouldShowConsent
-        ? "Path`Ora akan menggunakan AI untuk membaca dan menganalisis CV Anda, termasuk prediksi kategori karir, skill yang terdeteksi, skill yang perlu ditingkatkan, dan rekomendasi karir.\n\nData CV digunakan hanya untuk proses analisis dan menampilkan hasil kepada Anda."
+        ? "Path`Ora will use AI to read and analyze your CV, including career category predictions, detected skills, skills to improve, and career recommendations.\n\nCV data is used only for the analysis process and to display results to you."
         : analysisFailed
-          ? "File sudah tersimpan, tetapi analisis gagal. Silakan unggah file lagi untuk memulai analisis baru."
-          : "CV sudah tersimpan dan hasil analisis siap ditampilkan.";
+          ? "The file has been saved, but analysis failed. Please upload the file again to start a new analysis."
+          : "Your CV has been saved and the analysis results are ready to view.";
 
   return (
     <AppLayout>
       {/* Header - Menggunakan padding responsif pengganti ml-10 */}
       <div className="mb-6 md:mb-7 px-4 md:px-10 mt-4 md:mt-0">
         <h1 className="text-2xl md:text-3xl font-bold font-['Newsreader'] text-gray-900">
-          Unggah CV
+          Upload CV
         </h1>
         <p className="text-gray-600 mt-2 text-sm font-['Manrope',_sans-serif]">
-          Kirimkan riwayat profesional Anda untuk memulai analisis mendalam.
-          Sistem kami menguraikan pengalaman Anda menjadi informasi karier yang
-          dapat ditindaklanjuti.
+          Submit your professional history to start an in-depth analysis.
+          Our system turns your experience into actionable career insights.
         </p>
       </div>
 
@@ -297,25 +296,25 @@ const UploadPage: React.FC = () => {
       <div className="px-4 md:px-10 pb-8">
         <div className="w-full max-w-2xl mx-auto mb-5 rounded-2xl border border-[#8FB399]/40 bg-[#8FB399]/15 p-5 font-['Manrope',_sans-serif] text-[#102619] dark:border-[#8FB399]/25 dark:bg-[#0B2A18] dark:text-[#d1d5d1]">
           <h2 className="font-['Newsreader'] text-xl font-semibold">
-            Pemberitahuan Format CV
+            CV Format Notice
           </h2>
           <p className="mt-3 text-sm leading-6 text-gray-700 dark:text-[#d1d5d1]/80">
-            Pastikan CV yang Anda unggah menggunakan format ATS-friendly dan
-            hanya terdiri dari 1 kolom agar sistem dapat membaca serta
-            menganalisis isi CV dengan lebih akurat.
+            Make sure the CV you upload uses an ATS-friendly format and has
+            only one column so the system can read and analyze its contents
+            more accurately.
           </p>
           <p className="mt-3 text-sm leading-6 text-gray-700 dark:text-[#d1d5d1]/80">
-            Hindari penggunaan desain kompleks seperti tabel, grafik, ikon
-            berlebihan, gambar, atau layout multi-kolom karena dapat mengganggu
-            proses analisis AI.
+            Avoid complex designs such as tables, charts, excessive icons,
+            images, or multi-column layouts because they can disrupt the AI
+            analysis process.
           </p>
           <div className="mt-4 rounded-xl bg-white/75 p-4 text-sm leading-6 dark:bg-[#051B0F]/55">
             <p className="font-semibold text-[#102619] dark:text-[#8FB399]">
-              Format yang disarankan:
+              Recommended format:
             </p>
             <p className="mt-1 text-gray-700 dark:text-[#d1d5d1]/80">
-              CV sederhana, rapi, berbasis teks, 1 kolom, dan mudah dibaca oleh
-              sistem.
+              A simple, clean, text-based, one-column CV that is easy for the
+              system to read.
             </p>
           </div>
           <a
@@ -324,7 +323,7 @@ const UploadPage: React.FC = () => {
             rel="noreferrer"
             className="mt-4 inline-flex items-center justify-center rounded-lg bg-[#102619] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1a3a26] dark:bg-[#8FB399] dark:text-[#051B0F] dark:hover:bg-[#b7d6c2]"
           >
-            Lihat Contoh Template CV ATS
+            View ATS CV Template Example
           </a>
         </div>
 
@@ -339,15 +338,15 @@ const UploadPage: React.FC = () => {
             </div>
 
             <h2 className="text-2xl md:text-3xl mb-3 text-[#102619]">
-              Unggah Dokumen Anda
+              Upload Your Document
             </h2>
             <p className="text-gray-500 text-sm md:text-base max-w-md mb-6 md:mb-8">
-              Format yang didukung: PDF dibawah 10MB. Pastikan dokumen tidak
-              terkunci agar proses ekstraksi berjalan optimal.
+              Supported format: PDF under 10MB. Make sure the document is not
+              locked so extraction can run smoothly.
             </p>
 
             <span className="bg-[#061B0E] text-white px-6 md:px-8 py-3 rounded-lg text-sm md:text-base font-medium">
-              PILIH FILE
+              SELECT FILE
             </span>
 
             <input
@@ -364,7 +363,7 @@ const UploadPage: React.FC = () => {
           {selectedFile && (
             <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
               <p className="text-xs md:text-sm text-gray-500 mb-1">
-                File Dipilih
+                Selected File
               </p>
               <p className="font-medium text-sm md:text-base text-[#102619] truncate">
                 {selectedFile.name}
@@ -375,14 +374,14 @@ const UploadPage: React.FC = () => {
           {uploadedMetadata && !selectedFile && (
             <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
               <p className="text-xs md:text-sm text-gray-500 mb-1">
-                File Terakhir Diunggah
+                Last Uploaded File
               </p>
               <p className="font-medium text-sm md:text-base text-[#102619] truncate">
                 {uploadedMetadata.fileName}
               </p>
               <p className="mt-1 text-xs text-gray-500">
                 {formatFileSize(uploadedMetadata.fileSize)} •{" "}
-                {new Date(uploadedMetadata.uploadedAt).toLocaleString("id-ID")}
+                {new Date(uploadedMetadata.uploadedAt).toLocaleString("en-US")}
               </p>
             </div>
           )}
@@ -390,17 +389,17 @@ const UploadPage: React.FC = () => {
           {shouldShowConsent && !isFeedbackOpen && (
             <div className="mt-6 rounded-xl border border-emerald-100 bg-green-50 p-4">
               <p className="text-sm font-semibold text-[#102619]">
-                CV berhasil diunggah
+                CV uploaded successfully
               </p>
               <p className="mt-1 text-sm text-gray-600">
-                Lanjutkan ke persetujuan analisis AI untuk memproses CV Anda.
+                Continue to AI analysis consent to process your CV.
               </p>
               <button
                 type="button"
                 onClick={() => setFeedbackOpen(true)}
                 className="mt-3 rounded-lg bg-[#102619] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a3a26]"
               >
-                Lanjutkan Analisis
+                Continue Analysis
               </button>
               <button
                 type="button"
@@ -408,7 +407,7 @@ const UploadPage: React.FC = () => {
                 disabled={isCancellingAnalysis}
                 className="ml-0 mt-3 rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60 sm:ml-3"
               >
-                {isCancellingAnalysis ? "Membatalkan..." : "Batalkan Analisis"}
+                {isCancellingAnalysis ? "Cancelling..." : "Cancel Analysis"}
               </button>
             </div>
           )}
@@ -423,8 +422,8 @@ const UploadPage: React.FC = () => {
               </div>
               <p className="text-xs md:text-sm text-gray-600 mt-2 font-['Manrope',_sans-serif]">
                 {isAnalyzing
-                  ? "Menganalisis CV..."
-                  : `Mengunggah... ${progress}%`}
+                  ? "Analyzing CV..."
+                  : `Uploading... ${progress}%`}
               </p>
             </div>
           )}
@@ -439,7 +438,7 @@ const UploadPage: React.FC = () => {
               onClick={cancelReplaceFile}
               disabled={isReplacingFile}
               className="absolute right-4 top-4 rounded-full p-1 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40 dark:text-[#d1d5d1]/70 dark:hover:bg-[#123720] dark:hover:text-[#d1d5d1]"
-              aria-label="Tutup konfirmasi"
+              aria-label="Close confirmation"
             >
               <X size={18} />
             </button>
@@ -449,18 +448,17 @@ const UploadPage: React.FC = () => {
             </div>
 
             <h2 className="pr-8 text-xl md:text-2xl font-semibold font-['Newsreader'] text-[#102619] dark:text-[#d1d5d1]">
-              Ganti file sebelumnya?
+              Replace previous file?
             </h2>
             <p className="mt-3 text-sm leading-6 text-gray-600 font-['Manrope',_sans-serif] dark:text-[#d1d5d1]/75">
-              Anda masih memiliki CV yang sudah diunggah dan tersimpan di
-              metadata. Apakah Anda ingin mengganti file sebelumnya dengan file
-              baru yang dipilih?
+              You still have an uploaded CV saved in metadata. Do you want to
+              replace the previous file with the newly selected file?
             </p>
 
             <div className="mt-5 space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-[#8FB399]/20 dark:bg-[#051B0F]/55">
               <div>
                 <p className="text-xs uppercase tracking-wider text-gray-500 dark:text-[#d1d5d1]/55">
-                  File sebelumnya
+                  Previous file
                 </p>
                 <p className="mt-1 truncate text-sm font-semibold text-[#102619] dark:text-[#d1d5d1]">
                   {uploadedMetadata.fileName}
@@ -468,7 +466,7 @@ const UploadPage: React.FC = () => {
               </div>
               <div>
                 <p className="text-xs uppercase tracking-wider text-gray-500 dark:text-[#d1d5d1]/55">
-                  File baru
+                  New file
                 </p>
                 <p className="mt-1 truncate text-sm font-semibold text-[#102619] dark:text-[#d1d5d1]">
                   {pendingReplacementFile.name}
@@ -489,7 +487,7 @@ const UploadPage: React.FC = () => {
                 disabled={isReplacingFile}
                 className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-[#8FB399]/30 dark:text-[#d1d5d1] dark:hover:bg-[#123720]"
               >
-                Batal
+                Cancel
               </button>
               <button
                 type="button"
@@ -500,7 +498,7 @@ const UploadPage: React.FC = () => {
                 {isReplacingFile && (
                   <LoaderCircle className="h-4 w-4 animate-spin" />
                 )}
-                {isReplacingFile ? "Mengganti..." : "Ganti File"}
+                {isReplacingFile ? "Replacing..." : "Replace File"}
               </button>
             </div>
           </div>
@@ -516,7 +514,7 @@ const UploadPage: React.FC = () => {
               onClick={() => setFeedbackOpen(false)}
               disabled={isAnalyzing}
               className="absolute right-4 top-4 rounded-full p-1 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
-              aria-label="Tutup pesan"
+              aria-label="Close message"
             >
               <X size={18} />
             </button>
@@ -560,7 +558,7 @@ const UploadPage: React.FC = () => {
                 {uploadedMetadata && (
                   <div className="mb-4 rounded-xl border border-gray-200 bg-gray-50 p-3">
                     <p className="text-xs uppercase tracking-wider text-gray-500">
-                      File yang sudah diunggah
+                      Uploaded file
                     </p>
                     <p className="mt-1 truncate text-sm font-semibold text-[#102619]">
                       {uploadedMetadata.fileName}
@@ -579,8 +577,8 @@ const UploadPage: React.FC = () => {
                     className="mt-1 h-4 w-4 rounded border-gray-300 accent-[#102619]"
                   />
                   <span className="text-sm leading-6 text-gray-700 font-['Manrope',_sans-serif]">
-                    Saya menyetujui CV saya diproses menggunakan AI untuk
-                    kebutuhan analisis karir di Path`Ora.
+                    I agree that my CV may be processed using AI for career
+                    analysis purposes in Path`Ora.
                   </span>
                 </label>
 
@@ -590,7 +588,7 @@ const UploadPage: React.FC = () => {
                   disabled={!hasAiConsent || isAnalyzing}
                   className="mt-4 w-full rounded-lg bg-[#102619] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#1a3a26] disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  Setuju & Analisis CV
+                  Agree & Analyze CV
                 </button>
 
                 <button
@@ -601,8 +599,8 @@ const UploadPage: React.FC = () => {
                 >
                   <Trash2 size={16} />
                   {isCancellingAnalysis
-                    ? "Membatalkan..."
-                    : "Batalkan Analisis & Hapus CV"}
+                    ? "Cancelling..."
+                    : "Cancel Analysis & Delete CV"}
                 </button>
 
                 {cancelError && (
@@ -619,15 +617,15 @@ const UploadPage: React.FC = () => {
                 <div className="mt-4 grid grid-cols-1 gap-2 text-sm text-gray-600">
                   <div className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-[#102619]" />
-                    Membaca isi CV
+                    Reading CV contents
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-[#102619]" />
-                    Mengekstrak skill dan pengalaman
+                    Extracting skills and experience
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-[#102619]" />
-                    Menyusun prediksi karir
+                    Preparing career predictions
                   </div>
                 </div>
               </div>
@@ -641,7 +639,7 @@ const UploadPage: React.FC = () => {
                 className="mt-5 w-full md:w-auto inline-flex justify-center items-center gap-2 rounded-lg bg-[#102619] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a3a26] transition disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <Upload size={16} />
-                Unggah File Lagi
+                Upload File Again
               </button>
             )}
           </div>

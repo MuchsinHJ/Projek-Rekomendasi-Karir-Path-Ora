@@ -16,11 +16,11 @@ const DashboardPage: React.FC = () => {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold font-['Newsreader'] text-gray-900">
-            Beranda Utama
+            Dashboard
           </h1>
           <p className="text-gray-600 mt-2 text-sm font-['Manrope',_sans-serif]">
-            Selamat datang. Berikut adalah ringkasan progres dan kesiapan karier
-            Anda berdasarkan analisis data terbaru.
+            Welcome. Here is a summary of your progress and career readiness
+            based on the latest data analysis.
           </p>
         </div>
 
@@ -45,7 +45,7 @@ const DashboardPage: React.FC = () => {
         <div>
           {isLoading ? (
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-sm text-gray-500 animate-pulse">
-              Memuat riwayat analisis...
+              Loading analysis history...
             </div>
           ) : (
             <Riwayat history={history} onDeleted={refresh} />

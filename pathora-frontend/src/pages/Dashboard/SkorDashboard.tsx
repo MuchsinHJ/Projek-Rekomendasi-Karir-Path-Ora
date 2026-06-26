@@ -10,14 +10,14 @@ const SkorDashboard: React.FC<Props> = ({ summary }) => {
   const confidence = latestAnalysis
     ? Math.round(latestAnalysis.confidence * 100)
     : 0;
-  const category = latestAnalysis?.predicted_category ?? "Belum Ada Analisis";
+  const category = latestAnalysis?.predicted_category ?? "No Analysis Yet";
   const totalAnalysis = summary?.total_analyses ?? 0;
   const circumference = 2 * Math.PI * 56;
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 flex flex-col justify-between min-h-[280px]">
       <h2 className="text-xl font-bold text-gray-900 mb-4 text-center md:text-left">
-        Skor Kesiapan Kerja
+        Job Readiness Score
       </h2>
 
       <div className="flex flex-col items-center justify-center my-auto">
@@ -55,7 +55,7 @@ const SkorDashboard: React.FC<Props> = ({ summary }) => {
           {category}
         </h3>
         <p className="text-center text-xs text-gray-400">
-          Total Analisis: {totalAnalysis}
+          Total Analyses: {totalAnalysis}
         </p>
       </div>
     </div>

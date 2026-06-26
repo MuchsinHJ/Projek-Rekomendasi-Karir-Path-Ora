@@ -65,7 +65,7 @@ const AnalysisPage: React.FC = () => {
     return (
       <AppLayout>
         <div className="flex items-center justify-center min-h-screen text-gray-600">
-          Memuat hasil analisis...
+          Loading analysis results...
         </div>
       </AppLayout>
     );
@@ -85,7 +85,7 @@ const AnalysisPage: React.FC = () => {
     return (
       <AppLayout>
         <div className="flex items-center justify-center min-h-screen text-gray-600">
-          Data analisis tidak ditemukan.
+          Analysis data was not found.
         </div>
       </AppLayout>
     );
@@ -98,12 +98,12 @@ const AnalysisPage: React.FC = () => {
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between mb-5">
             <div className="min-w-0 lg:max-w-3xl">
               <h1 className="text-2xl sm:text-3xl font-bold font-['Newsreader'] text-gray-900 leading-tight">
-                Hasil Analisis CV
+                CV Analysis Results
               </h1>
               <p className="text-gray-600 mt-2 text-sm sm:text-base leading-6 font-['Manrope',_sans-serif]">
                 {isDetailMode
-                  ? "Berikut hasil analisis CV berdasarkan data CV yang Anda pilih."
-                  : "Gunakan paginasi untuk melihat hasil analisis dari tiap CV Anda."}
+                  ? "Here are the CV analysis results based on the CV data you selected."
+                  : "Use pagination to view the analysis results for each of your CVs."}
               </p>
             </div>
 
@@ -116,7 +116,7 @@ const AnalysisPage: React.FC = () => {
 
               <div className="min-w-0">
                 <p className="text-[10px] sm:text-xs uppercase tracking-widest text-gray-500 leading-4">
-                  Skor prediksi Karier Teratas
+                  Top Career Prediction Score
                 </p>
                 <p className="font-medium text-[#102619] break-words">
                   {result.predicted_category}
@@ -129,12 +129,12 @@ const AnalysisPage: React.FC = () => {
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-white px-5 py-4 shadow-sm">
               <div>
                 <p className="text-sm font-semibold text-[#102619]">
-                  CV {currentIndex + 1} dari {totalAnalyses}
+                  CV {currentIndex + 1} of {totalAnalyses}
                 </p>
                 <p className="text-xs text-gray-500">
                   {analysis?.created_at
-                    ? new Date(analysis.created_at).toLocaleDateString("id-ID")
-                    : "Tanggal analisis tidak tersedia"}
+                    ? new Date(analysis.created_at).toLocaleDateString("en-US")
+                    : "Analysis date is not available"}
                 </p>
               </div>
 
@@ -146,7 +146,7 @@ const AnalysisPage: React.FC = () => {
                   className="inline-flex items-center gap-2 rounded-lg border border-[#102619] px-4 py-2 text-sm text-[#102619] hover:bg-[#102619] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   <ChevronLeft size={16} />
-                  Sebelumnya
+                  Previous
                 </button>
                 <button
                   type="button"
@@ -154,7 +154,7 @@ const AnalysisPage: React.FC = () => {
                   disabled={currentIndex >= totalAnalyses - 1}
                   className="inline-flex items-center gap-2 rounded-lg border border-[#102619] px-4 py-2 text-sm text-[#102619] hover:bg-[#102619] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  Berikutnya
+                  Next
                   <ChevronRight size={16} />
                 </button>
               </div>
@@ -165,7 +165,7 @@ const AnalysisPage: React.FC = () => {
             <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm">
               <div className="flex justify-between items-center mb-5 sm:mb-6">
                 <h2 className="font-serif text-xl sm:text-2xl text-[#102619]">
-                  Prediksi Karir
+                  Career Predictions
                 </h2>
                 <SlidersHorizontal className="w-5 h-5 text-gray-400" />
               </div>
@@ -192,7 +192,7 @@ const AnalysisPage: React.FC = () => {
                   })
                 ) : (
                   <p className="text-sm text-gray-400">
-                    Distribusi prediksi belum tersedia.
+                    Prediction distribution is not available yet.
                   </p>
                 )}
               </div>
@@ -202,14 +202,14 @@ const AnalysisPage: React.FC = () => {
               <div className="flex items-center gap-2 mb-5 sm:mb-6">
                 <Plane className="w-5 h-5 text-[#102619]" />
                 <h2 className="font-serif text-xl sm:text-2xl text-[#102619]">
-                  Analisis Skill: {result.predicted_category}
+                  Skill Analysis: {result.predicted_category}
                 </h2>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-10">
                 <div>
                   <p className="text-xs uppercase tracking-wider text-gray-500 mb-4">
-                    Skill Dimiliki
+                    Existing Skills
                   </p>
                   <div className="flex flex-wrap gap-3">
                     {matchedSkills.length > 0 ? (
@@ -223,7 +223,7 @@ const AnalysisPage: React.FC = () => {
                       ))
                     ) : (
                       <span className="text-gray-400 text-sm">
-                        Tidak ada data
+                        No data
                       </span>
                     )}
                   </div>
@@ -231,7 +231,7 @@ const AnalysisPage: React.FC = () => {
 
                 <div>
                   <p className="text-xs uppercase tracking-wider text-gray-500 mb-4">
-                    Perlu Ditambahkan
+                    Skills to Add
                   </p>
                   <div className="flex flex-wrap gap-3">
                     {missingSkills.length > 0 ? (
@@ -245,7 +245,7 @@ const AnalysisPage: React.FC = () => {
                       ))
                     ) : (
                       <span className="text-gray-400 text-sm">
-                        Tidak ada data
+                        No data
                       </span>
                     )}
                   </div>
@@ -258,21 +258,21 @@ const AnalysisPage: React.FC = () => {
             <div className="flex items-center gap-2 mb-5 sm:mb-6">
               <Sparkles className="w-5 h-5 text-[#102619]" />
               <h2 className="font-serif text-2xl sm:text-3xl text-[#102619]">
-                Rekomendasi Strategis Path'Ora
+                Path'Ora Strategic Recommendations
               </h2>
             </div>
 
             <div className="max-w-4xl">
               <p className="text-gray-700 text-sm sm:text-base leading-7 sm:leading-8 whitespace-pre-line">
                 {result.description_career_recommendations ||
-                  "Belum ada narasi rekomendasi dari hasil analisis ini."}
+                  "No recommendation narrative is available for this analysis yet."}
               </p>
 
               <Link
                 to={`/career-recommendations/${analysis.id}`}
                 className="inline-block mt-6 sm:mt-8 px-5 sm:px-8 py-3 border border-[#102619] rounded-lg text-sm sm:text-base text-[#102619] hover:bg-[#102619] hover:text-white transition"
               >
-                LIHAT RENCANA AKSI TERPERINCI
+                VIEW DETAILED ACTION PLAN
               </Link>
             </div>
           </div>

@@ -27,7 +27,7 @@ const JobRecommendationCard: React.FC<JobRecommendationCardProps> = ({
       <div className="w-fit bg-[#F3F1EB] px-3 sm:px-4 py-2 sm:py-3 rounded-full flex items-center gap-2 shrink-0">
         <MapPin size={14} className="text-[#102619] shrink-0" />
         <span className="text-xs sm:text-sm font-medium text-[#102619] whitespace-nowrap">
-          {job.matchPercentage}% Sesuai
+          {job.matchPercentage}% Match
         </span>
       </div>
     </div>
@@ -35,7 +35,7 @@ const JobRecommendationCard: React.FC<JobRecommendationCardProps> = ({
     <div className="mt-5 space-y-5 sm:space-y-4">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-4">
         <p className="text-[10px] sm:text-xs tracking-[0.15em] uppercase text-gray-600 sm:min-w-[140px] sm:pt-2">
-          Skill Yang Sesuai
+          Matching Skills
         </p>
         <span className="hidden sm:inline sm:pt-2">:</span>
         <div className="flex flex-wrap gap-2">
@@ -49,14 +49,14 @@ const JobRecommendationCard: React.FC<JobRecommendationCardProps> = ({
               </span>
             ))
           ) : (
-            <span className="text-sm text-gray-400">Tidak tersedia</span>
+            <span className="text-sm text-gray-400">Not available</span>
           )}
         </div>
       </div>
 
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-4">
         <p className="text-[10px] sm:text-xs tracking-[0.15em] uppercase text-gray-600 sm:min-w-[140px] sm:pt-2">
-          Perlu Ditambahkan
+          Skills to Add
         </p>
         <span className="hidden sm:inline sm:pt-2">:</span>
         <div className="flex flex-wrap gap-2">
@@ -71,7 +71,7 @@ const JobRecommendationCard: React.FC<JobRecommendationCardProps> = ({
             ))
           ) : (
             <span className="text-sm text-gray-400">
-              Tidak ada skill tambahan yang diperlukan
+              No additional skills needed
             </span>
           )}
         </div>
